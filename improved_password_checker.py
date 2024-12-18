@@ -1,4 +1,5 @@
 import pygame
+from random import shuffle
 from time import sleep as slp
 from os.path import join
 
@@ -30,6 +31,10 @@ hint_text = 'Hint:'
 
 valid_imgs = ("wait.png", "yes.png", "no.png")
 vi_num = 0
+
+ad_imgs = ["thayerad.png","BBC.png", "kfc.prime.png","senmouse.png"]
+ad_num = 0
+show_ads = True
 
 input_rect = pygame.Rect(25, 675, 750, 100)
 input_rect_color = (100,230,100)
@@ -63,13 +68,13 @@ class textBox():
 
 class imageBox():
 
-    def __init__(self, x, y, width, height, image):
+    def __init__(self, x, y, width, height,folder, image):
         self.rect = pygame.Rect(x,y,width,height)
         self.x = x
         self.y = y
         self.height = height
         self.width = width
-        self.image = pygame.image.load(join('password_assets','validation_imgs',image))
+        self.image = pygame.image.load(join('password_assets',folder,image))
 
     def draw_image(self):
         screen_window.blit(self.image, (self.x, self.y))
@@ -173,7 +178,7 @@ def validate_password(password):
 # MAIN(WINDOW)
 def main(window):
     #Global text and input box
-    global user_text, input_rect, input_rect_color, validation_text, hint_text, valid_imgs, vi_num
+    global user_text, input_rect, input_rect_color, validation_text, hint_text, valid_imgs, vi_num, ad_imgs, ad_num, show_ads
 
     # defining clock for FPS
     clock = pygame.time.Clock()
@@ -188,13 +193,19 @@ def main(window):
         # TEXTBOXES
 
         checkbox_img = valid_imgs[vi_num]
+        if ad_num >= len(ad_imgs):
+            ad_num = 0
+            shuffle(ad_imgs)
+        ad_img = ad_imgs[ad_num]
 
         prompt = textBox(25,25,750,75, text="Type a password and type \"Enter\" to check validation!")
 
         validation_box = textBox(100,110,675,75, text=validation_text)
         hint = textBox(25,635, 750, 25, text = hint_text, want_center=False)
+        ad_text = textBox(25,200,50,30, text="ADS:")
 
-        checkbox = imageBox(25,110,75,75,checkbox_img)
+        checkbox = imageBox(25,110,75,75, "validation_imgs",checkbox_img)
+        ad = imageBox(150,200,400,400, "ads", ad_img)
 
         #Checking for events happening in program
         for event in pygame.event.get():
@@ -204,6 +215,13 @@ def main(window):
                 run = False
                 break
                 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if ad_text.rect.collidepoint(event.pos):
+                    if show_ads:
+                        show_ads = False
+                    else:
+                        show_ads = True
+            
             if event.type == pygame.KEYDOWN: #CHECKS IF A KEY HAS BEEN PRESSED
                 if event.key == pygame.K_BACKSPACE: # BACKSPACE function
                     user_text= user_text[:-1]
@@ -233,12 +251,16 @@ def main(window):
                                 else:
                                     if not check_last_three(user_text): #COND2: NUMS ONLY: LAST 3 CHARS
                                         hint_text = "Hint: Last 3 characters needs to be numbers only"
+
+                    ad_num +=1
                                 
                 else:
                     user_text += event.unicode
 
-        draw(window,[validation_box, prompt, hint], checkbox) # updates screen
-
+        if show_ads:
+            draw(window,[validation_box, prompt, hint,ad_text], [checkbox, ad]) # updates screen
+        else:
+            draw(window,[validation_box, prompt, hint,ad_text],[checkbox])
     pygame.quit()
     quit()
 

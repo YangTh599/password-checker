@@ -37,10 +37,14 @@ def check_specials(password):
             return True
     return False
 
-valid_imgs = ('wait.png', 'yes.png', 'no.png')
+# valid_imgs = ('wait.png', 'yes.png', 'no.png')
+ad_imgs = ["thayerad.png"]
 
-for img in valid_imgs:
-    print(os.path.exists(join('password-checker','password_assets', 'validation_imgs', img)))
+# for img in valid_imgs:
+#     print(os.path.exists(join('password_assets', 'validation_imgs', img)))
+
+for img in ad_imgs:
+    print(os.path.exists(join('password_assets', 'ads', img)))
 
 # print(check_first_five("jdsss"))
 # print(check_last_three("3g344"))
