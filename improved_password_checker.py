@@ -1,5 +1,6 @@
 import pygame
 from time import sleep as slp
+from os.path import join
 
 #Initializing pygame and caption
 pygame.init()
@@ -26,6 +27,9 @@ screen_window = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 user_text = ''
 validation_text = "Is password Valid?"
 hint_text = 'Hint:'
+
+valid_imgs = ("wait.png", "yes.png", "no.png")
+vi_num = 0
 
 input_rect = pygame.Rect(25, 675, 750, 100)
 input_rect_color = (100,230,100)
@@ -57,19 +61,42 @@ class textBox():
             text_rect = self.rect #Left Text
         screen_window.blit(img, text_rect)
 
+class imageBox():
+
+    def __init__(self, x, y, width, height, image):
+        self.rect = pygame.Rect(x,y,width,height)
+        self.x = x
+        self.y = y
+        self.height = height
+        self.width = width
+        self.image = pygame.image.load(join('password_assets','validation_imgs',image))
+
+    def draw_image(self):
+        screen_window.blit(self.image, (self.x, self.y))
+
 # DRAW FUNCTION FOR SCREEN
 
-def draw(window, textboxes):
+def draw(window, textboxes,images):
     """DRAWS ON SCREEN ELEMENTS"""
     global user_text, input_rect, input_rect_color
 
     window.fill(BLACK)
 
+    # DRAW TEXTBOXES ON SCREEN
     if type(textboxes) is list or type(textboxes) is tuple:
         for textbox in textboxes:
             textbox.draw_textbox()
     else:
         textboxes.draw_textbox()
+
+    # DRAW IMAGES ON SCREEN
+    if type(images) is list or type(images) is tuple:
+        for image in images:
+            if not image == "":
+                image.draw_image()
+    else:
+        if not images == "":
+            images.draw_image()
 
     # INPUT RECTANGLE DRAWN
     pygame.draw.rect(screen_window, input_rect_color, input_rect)
@@ -146,7 +173,7 @@ def validate_password(password):
 # MAIN(WINDOW)
 def main(window):
     #Global text and input box
-    global user_text, input_rect, input_rect_color, validation_text, hint_text
+    global user_text, input_rect, input_rect_color, validation_text, hint_text, valid_imgs, vi_num
 
     # defining clock for FPS
     clock = pygame.time.Clock()
@@ -159,10 +186,15 @@ def main(window):
         clock.tick(FPS)
 
         # TEXTBOXES
+
+        checkbox_img = valid_imgs[vi_num]
+
         prompt = textBox(25,25,750,75, text="Type a password and type \"Enter\" to check validation!")
 
         validation_box = textBox(100,110,675,75, text=validation_text)
         hint = textBox(25,635, 750, 25, text = hint_text, want_center=False)
+
+        checkbox = imageBox(25,110,75,75,checkbox_img)
 
         #Checking for events happening in program
         for event in pygame.event.get():
@@ -180,9 +212,11 @@ def main(window):
                     if validate_password(user_text):
                         validation_text = "Password is Valid"
                         hint_text = "Hint: None needed"
+                        vi_num = 1
                     else:
                         # HINT TEXTS
                         validation_text = "Password is invalid"
+                        vi_num = 2
                         if not check_pass_length(user_text):
                             hint_text = "Hint: Password needs to be longer" #SHORT PASSWORD
                         else:
@@ -203,7 +237,7 @@ def main(window):
                 else:
                     user_text += event.unicode
 
-        draw(window,[validation_box, prompt, hint]) # updates screen
+        draw(window,[validation_box, prompt, hint], checkbox) # updates screen
 
     pygame.quit()
     quit()

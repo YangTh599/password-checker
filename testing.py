@@ -1,3 +1,6 @@
+import os
+from os.path import join
+
 VALID_CHARS = "abcdefghijklmnopqrstuvxyz0123456789"
 
 def check_first_five(password):
@@ -33,6 +36,12 @@ def check_specials(password):
         if char not in VALID_CHARS:
             return True
     return False
+
+valid_imgs = ('wait.png', 'yes.png', 'no.png')
+
+for img in valid_imgs:
+    print(os.path.exists(join('password-checker','password_assets', 'validation_imgs', img)))
+
 # print(check_first_five("jdsss"))
 # print(check_last_three("3g344"))
-print(check_digit_and_letters("asdasd$$345345"))
+# print(check_digit_and_letters("asdasd$$345345"))
