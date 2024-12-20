@@ -32,7 +32,7 @@ hint_text = 'Hint:'
 valid_imgs = ("wait.png", "yes.png", "no.png")
 vi_num = 0
 
-ad_imgs = ["thayerad.png","BBC.png", "kfc.prime.png","senmouse.png"]
+ad_imgs = ["thayerad.png","BBC.png", "kfc.prime.png","senmouse.png", "tix.png"]
 ad_num = 0
 show_ads = True
 
@@ -141,7 +141,7 @@ def has_digit(password):
     
 def check_specials(password):
     """MAKES SURE PASSWORD (or inputted string) does not have any special characters in it"""
-    for char in password:
+    for char in password.lower():
         if char not in VALID_CHARS:
             return True
     return False
