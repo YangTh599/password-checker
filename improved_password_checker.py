@@ -204,6 +204,7 @@ def main(window):
         hint = textBox(25,635, 750, 25, text = hint_text, want_center=False)
         ad_text = textBox(25,200,50,30, text="ADS:")
 
+        #IMAGES
         checkbox = imageBox(25,110,75,75, "validation_imgs",checkbox_img)
         ad = imageBox(150,200,400,400, "ads", ad_img)
 
@@ -216,7 +217,7 @@ def main(window):
                 break
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if ad_text.rect.collidepoint(event.pos):
+                if ad_text.rect.collidepoint(event.pos): #IF AD TEXT IS CLICKED
                     if show_ads:
                         show_ads = False
                     else:
